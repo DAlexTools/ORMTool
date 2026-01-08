@@ -13,14 +13,7 @@
     #include <ApplicationServices/ApplicationServices.h>
 #endif
 
-
-
-
-
-Application::Application() : uiManager(std::make_unique<UIManager>())
-{
-	
-}
+Application::Application() : uiManager(std::make_unique<UIManager>()) { }
 
 Application::~Application()
 {
@@ -33,6 +26,7 @@ Application::~Application()
 	{
 		return *initStatus;
 	}
+
 	const auto glfwStatus = InitializeGLFW();
 	if(glfwStatus != InitStatus::OK) 
 	{
@@ -48,7 +42,7 @@ Application::~Application()
 	std::cout << "GLFW Initialized successfully\n";
 
 	initStatus = InitStatus::OK;
-	return InitStatus::OK;
+	return *initStatus;
 }
 
 void Application::RunApplication()
@@ -62,16 +56,11 @@ void Application::RunApplication()
 	while(!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
-		RenderScene();
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
-
 		ImGui::NewFrame();
-		uiManager->BeginFrame();
-
-		uiManager->DrawUI();
-
-		uiManager->Render();
+		RenderUIManager();
+		RenderScene();
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		glfwSwapBuffers(window);
@@ -126,18 +115,18 @@ std::string_view Application::GetInitStatus(InitStatus status)
         return InitStatus::GLFW_InitFailed;
     }
 
-    // 1. Настройки OpenGL
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    
-    // 2. 🔧 ВАЖНО: разрешить изменение размера (иначе некоторые WM не показывают кнопки)
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);  // ИЗМЕНИЛ НА TRUE!
-    
-    // 3. Включить декорации окна
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);    
+
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
     glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
+    glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
+    glfwWindowHint(GLFW_FOCUSED, GLFW_TRUE);
+    glfwWindowHint(GLFW_AUTO_ICONIFY, GLFW_TRUE);
+    glfwWindowHint(GLFW_FLOATING, GLFW_FALSE);
+    glfwWindowHint(GLFW_MAXIMIZED, GLFW_FALSE);
     
-    // 4. Создать окно
     window = glfwCreateWindow(ORM::WindowWidth, ORM::WindowHeight, 
                               ORM::TitleStr, nullptr, nullptr);
     
@@ -146,17 +135,18 @@ std::string_view Application::GetInitStatus(InitStatus status)
         return InitStatus::WindowCreationFailed;
     }
 
-    // 5. Установить базовые callback'и
-    glfwSetWindowCloseCallback(window, [](GLFWwindow* w) {
+    glfwSetWindowCloseCallback(window, [](GLFWwindow* w) 
+	{
         glfwSetWindowShouldClose(w, GLFW_TRUE);
     });
 
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
-
+    glfwRestoreWindow(window);
+	glfwShowWindow(window);
+    
     return InitStatus::OK;
 }
-
 
 
 void Application::RenderScene()
@@ -164,6 +154,13 @@ void Application::RenderScene()
 	glViewport(0, 0, ORM::WindowWidth, ORM::WindowHeight);
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // 
 	glClear(GL_COLOR_BUFFER_BIT);
+}
+
+void Application::RenderUIManager()
+{		
+	uiManager->BeginFrame();
+	uiManager->DrawUI();
+	uiManager->Render();
 }
 
 void Application::GLFWErrorCallback(int error, const char* description)

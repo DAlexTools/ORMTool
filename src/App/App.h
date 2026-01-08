@@ -32,6 +32,7 @@ private:
 	static void GLFWErrorCallback(int error, const char* description);
 	[[nodiscard]] InitStatus InitializeGLFW();
 	void RenderScene();
+	void RenderUIManager();
 
 
 	GLFWwindow* window = nullptr;
