@@ -109,26 +109,19 @@ std::string_view Application::GetInitStatus(InitStatus status)
 [[nodiscard]] InitStatus Application::InitializeGLFW() 
 {
     glfwSetErrorCallback(GLFWErrorCallback);
-
     if(!glfwInit()) 
     {
         return InitStatus::GLFW_InitFailed;
     }
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);    
+	ConfigureGLFWHints();
 
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-    glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
-    glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
-    glfwWindowHint(GLFW_FOCUSED, GLFW_TRUE);
-    glfwWindowHint(GLFW_AUTO_ICONIFY, GLFW_TRUE);
-    glfwWindowHint(GLFW_FLOATING, GLFW_FALSE);
-    glfwWindowHint(GLFW_MAXIMIZED, GLFW_FALSE);
-    
-    window = glfwCreateWindow(ORM::WindowWidth, ORM::WindowHeight, 
-                              ORM::TitleStr, nullptr, nullptr);
+    window = glfwCreateWindow( // 
+		ORM::WindowWidth, // 
+		ORM::WindowHeight, //
+		ORM::TitleStr, //
+		nullptr, // 
+		nullptr);
     
     if(!window) 
     {
@@ -158,9 +151,29 @@ void Application::RenderScene()
 
 void Application::RenderUIManager()
 {		
-	uiManager->BeginFrame();
 	uiManager->DrawUI();
 	uiManager->Render();
+}
+
+void Application::ConfigureGLFWHints()
+{
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, ORM::GraphicsConfig::OPENGL_MINOR);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, ORM::GraphicsConfig::OPENGL_MAJOR);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);    
+
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
+    glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
+    glfwWindowHint(GLFW_FOCUSED, GLFW_TRUE);
+    glfwWindowHint(GLFW_AUTO_ICONIFY, GLFW_TRUE);
+    glfwWindowHint(GLFW_FLOATING, GLFW_FALSE);
+    glfwWindowHint(GLFW_MAXIMIZED, GLFW_FALSE);
+
+#ifdef _DEBUG
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+#endif
+
+	glfwWindowHint(GLFW_SAMPLES, ORM::GraphicsConfig::ENABLE_DEBUG); 
 }
 
 void Application::GLFWErrorCallback(int error, const char* description)

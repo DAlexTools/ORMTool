@@ -34,6 +34,10 @@ private:
 	void RenderScene();
 	void RenderUIManager();
 
+	void ConfigureGLFWHints();
+
+
+
 
 	GLFWwindow* window = nullptr;
 	std::optional<InitStatus> initStatus;

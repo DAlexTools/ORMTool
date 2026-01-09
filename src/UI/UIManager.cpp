@@ -18,8 +18,6 @@
 
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
 
-
-
 namespace ORMTool
 {
 	constexpr const char* TitleProgram 	= "ORMTool";
@@ -37,10 +35,7 @@ namespace ORMTool
 	constexpr ImVec2 WindowSize			 	= ImVec2(686, 80);
 	constexpr ImVec2 GenerateButtonSize 	= ImVec2(160, 26);
 	constexpr ImVec2 ProgressBarWidgetSize 	= ImVec2(522, 26);
-
 }
-
-
 
 namespace fs = std::filesystem;
 
@@ -56,11 +51,6 @@ void UIManager::Initialize(GLFWwindow* window)
 	ImGuiIO& io = ImGui::GetIO();
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init("#version 130");
-}
-
-void UIManager::BeginFrame()
-{
- 
 }
 
 void UIManager::DrawUI()

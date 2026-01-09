@@ -66,7 +66,6 @@ public:
 	~UIManager();
 
 	void Initialize(GLFWwindow* window);
-	void BeginFrame();
 	void DrawUI();
 	void Render();
 	void Shutdown();
@@ -105,7 +104,6 @@ private:
 	std::mutex loadingMutex;
 	std::thread loadingThread;
 	
-
 	static constexpr int resolutionValues[6] = { 128, 256, 512, 1024, 2048, 4096 };
 	static constexpr const char* resolutionOptions[6] = { "128","256","512","1024","2048","4096" };
 };
