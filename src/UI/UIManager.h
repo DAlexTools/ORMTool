@@ -4,16 +4,15 @@
 #include <thread>
 #include <mutex>
 #include <functional>
-
-
 #include <array>
 #include <cmath>
+#include <map>
+
 
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
 #include "ImNeo.h"
-#include <map>
 #include "Utils/Types.h"
 
 class UIManager final

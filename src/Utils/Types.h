@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <functional>
 #include <GLFW/glfw3.h>
 
 /** enum channels  */
@@ -43,5 +44,4 @@ struct SaveData
 	std::string saveUnityPath;
 
 	std::function<void(float*)> progressCallback;
-
 };

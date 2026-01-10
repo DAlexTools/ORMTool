@@ -143,6 +143,9 @@ add_executable(ORMTool
     src/UI/UIManager.h
     src/UI/ImNeo.h
 
+    src/UI/UIManagerModel.h
+    src/UI/UIManagerModel.cpp
+
     src/IO/IOService.cpp
     src/IO/IOService.h
 
@@ -163,6 +166,10 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/src PREFIX "Source" FILES
     src/UI/UIManager.cpp
     src/UI/UIManager.h
     src/UI/ImNeo.h
+
+    src/UI/UIManagerModel.h
+    src/UI/UIManagerModel.cpp
+
 
     src/IO/IOService.cpp
     src/IO/IOService.h

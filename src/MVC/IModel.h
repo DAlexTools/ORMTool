@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 #include <string>
 
 /**
@@ -21,7 +21,7 @@ public:
 	virtual ~IModel() = default;
 
 	/** Returns a unique string identifier for the model instance. */
-	virtual std::string GetId() = 0;
+	virtual std::string GetId() const = 0;
 
 	/** Resets the model's internal state to default values. */
 	virtual void Reset() = 0;
