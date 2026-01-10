@@ -5,7 +5,7 @@
 #ifdef __linux__
     #include <X11/Xlib.h>
     #include <X11/Xatom.h>
-    
+
 #elif _WIN32
     #define WIN32_LEAN_AND_MEAN
     #include <windows.h>
@@ -28,7 +28,7 @@ Application::~Application()
 	}
 
 	const auto glfwStatus = InitializeGLFW();
-	if(glfwStatus != InitStatus::OK) 
+	if(glfwStatus != InitStatus::OK)
 	{
 		std::cerr << GetInitStatus(glfwStatus) << " at " << __FUNCTION__ << ":" << __LINE__ << "\n";
 		initStatus = glfwStatus;
@@ -47,12 +47,12 @@ Application::~Application()
 
 void Application::RunApplication()
 {
-	if(!IsInitialized()) 
+	if(!IsInitialized())
 	{
 		std::cerr << "Application not initialized!\n";
 		return;
 	}
-	
+
 	while(!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
@@ -74,8 +74,8 @@ void Application::Shutdown()
 		uiManager->Shutdown();
 		uiManager.reset();
 	}
-	
-	if(window) 
+
+	if(window)
 	{
 		glfwDestroyWindow(window);
 		window = nullptr;
@@ -93,9 +93,9 @@ bool Application::IsInitialized() const
 	return initStatus.has_value() && *initStatus == InitStatus::OK;
 }
 
-std::string_view Application::GetInitStatus(InitStatus status) 
+std::string_view Application::GetInitStatus(InitStatus status)
 {
-	switch(status) 
+	switch(status)
 	{
 	case InitStatus::OK: return "Success";
 	case InitStatus::GLFW_InitFailed: return "GLFW initialization failed";
@@ -106,29 +106,29 @@ std::string_view Application::GetInitStatus(InitStatus status)
 	}
 }
 
-[[nodiscard]] InitStatus Application::InitializeGLFW() 
+[[nodiscard]] InitStatus Application::InitializeGLFW()
 {
     glfwSetErrorCallback(GLFWErrorCallback);
-    if(!glfwInit()) 
+    if(!glfwInit())
     {
         return InitStatus::GLFW_InitFailed;
     }
 
 	ConfigureGLFWHints();
 
-    window = glfwCreateWindow( // 
-		ORM::WindowWidth, // 
+    window = glfwCreateWindow( //
+		ORM::WindowWidth, //
 		ORM::WindowHeight, //
 		ORM::TitleStr, //
-		nullptr, // 
+		nullptr, //
 		nullptr);
-    
-    if(!window) 
+
+    if(!window)
     {
         return InitStatus::WindowCreationFailed;
     }
 
-    glfwSetWindowCloseCallback(window, [](GLFWwindow* w) 
+    glfwSetWindowCloseCallback(window, [](GLFWwindow* w)
 	{
         glfwSetWindowShouldClose(w, GLFW_TRUE);
     });
@@ -137,7 +137,7 @@ std::string_view Application::GetInitStatus(InitStatus status)
     glfwSwapInterval(1);
     glfwRestoreWindow(window);
 	glfwShowWindow(window);
-    
+
     return InitStatus::OK;
 }
 
@@ -145,23 +145,23 @@ std::string_view Application::GetInitStatus(InitStatus status)
 void Application::RenderScene()
 {
 	glViewport(0, 0, ORM::WindowWidth, ORM::WindowHeight);
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // 
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); //
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void Application::RenderUIManager()
-{		
+{
 	uiManager->DrawUI();
 	uiManager->Render();
 }
 
 void Application::ConfigureGLFWHints()
 {
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, ORM::GraphicsConfig::OPENGL_MINOR);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, ORM::GraphicsConfig::OPENGL_MAJOR);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);    
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, ORM::GraphicsConfig::OPENGL_MAJOR);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, ORM::GraphicsConfig::OPENGL_MINOR);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
     glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
     glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
     glfwWindowHint(GLFW_FOCUSED, GLFW_TRUE);
@@ -173,7 +173,7 @@ void Application::ConfigureGLFWHints()
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 #endif
 
-	glfwWindowHint(GLFW_SAMPLES, ORM::GraphicsConfig::ENABLE_DEBUG); 
+	glfwWindowHint(GLFW_SAMPLES, ORM::GraphicsConfig::ENABLE_DEBUG);
 }
 
 void Application::GLFWErrorCallback(int error, const char* description)

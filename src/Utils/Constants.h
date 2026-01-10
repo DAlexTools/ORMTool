@@ -9,10 +9,10 @@ namespace ORM
 
 	namespace GraphicsConfig
 	{
-    	constexpr int OPENGL_MAJOR = 4;
-    	constexpr int OPENGL_MINOR = 6;
-    	constexpr int MSAA_SAMPLES = 4;
-    	constexpr bool ENABLE_DEBUG = true;
+		constexpr int OPENGL_MAJOR = 4;
+		constexpr int OPENGL_MINOR = 6;
+		constexpr int MSAA_SAMPLES = 4;
+		constexpr bool ENABLE_DEBUG = true;
 	}
 }
 

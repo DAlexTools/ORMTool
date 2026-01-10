@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 
 #include <imgui.h>
 #include <imgui_internal.h>
@@ -11,62 +11,67 @@
 namespace ImNeo
 {
 	/** operator+ overload  */
-    inline ImVec2 operator+(const ImVec2& lhs, const ImVec2& rhs) 
-    {
-	    return ImVec2(lhs.x + rhs.x, lhs.y + rhs.y);
-    }
+	inline ImVec2 operator+(const ImVec2& lhs, const ImVec2& rhs)
+	{
+		return ImVec2(lhs.x + rhs.x, lhs.y + rhs.y);
+	}
 
-	/** operator- overload*/
-    inline ImVec2 operator-(const ImVec2& lhs, const ImVec2& rhs) 
-    {
-	    return ImVec2(lhs.x - rhs.x, lhs.y - rhs.y);
-    }
+	/** operator- overload */
+	inline ImVec2 operator-(const ImVec2& lhs, const ImVec2& rhs)
+	{
+		return ImVec2(lhs.x - rhs.x, lhs.y - rhs.y);
+	}
 
-    inline ImVec2 operator*(const ImVec2& lhs, float rhs) 
-    {
-	    return ImVec2(lhs.x * rhs, lhs.y * rhs);
-    }
+	/** operator* overload */
+	inline ImVec2 operator*(const ImVec2& lhs, float rhs)
+	{
+		return ImVec2(lhs.x * rhs, lhs.y * rhs);
+	}
 
-    inline ImVec2 operator*(float lhs, const ImVec2& rhs) {
-	    return ImVec2(lhs * rhs.x, lhs * rhs.y);
-    }
+	/** operator* overload */
+	inline ImVec2 operator*(float lhs, const ImVec2& rhs)
+	{
+		return ImVec2(lhs * rhs.x, lhs * rhs.y);
+	}
 
-    inline ImVec2 operator/(const ImVec2& lhs, float rhs) {
-	    return ImVec2(lhs.x / rhs, lhs.y / rhs);
-    }
+	/* operator/ overload */
+	inline ImVec2 operator/(const ImVec2& lhs, float rhs)
+	{
+		return ImVec2(lhs.x / rhs, lhs.y / rhs);
+	}
 
-    struct ImVec3 
-    {
-	    float x, y, z;
-	    ImVec3(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {}
-    };
+	struct ImVec3
+	{
+		float x, y, z;
+		ImVec3(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {}
+	};
 
-    inline ImVec3 RotateX(const ImVec3& v, float angle)
-    {
-	    float rad = angle * (3.14159f / 180.0f);
-	    float cosA = cos(rad);
-	    float sinA = sin(rad);
-	
-        return ImVec3(v.x, v.y * cosA - v.z * sinA, v.y * sinA + v.z * cosA);
-    }
+	inline ImVec3 RotateX(const ImVec3& v, float angle)
+	{
+		float rad = angle * (3.14159f / 180.0f);
+		float cosA = cos(rad);
+		float sinA = sin(rad);
 
-    inline ImVec3 RotateY(const ImVec3& v, float angle) 
-    {
-	    float rad = angle * (3.14159f / 180.0f);
-	    float cosA = cos(rad);
-	    float sinA = sin(rad);
-	    
-        return ImVec3(v.x * cosA + v.z * sinA, v.y, -v.x * sinA + v.z * cosA);
-    }
+		return ImVec3(v.x, v.y * cosA - v.z * sinA, v.y * sinA + v.z * cosA);
+	}
 
-    inline void Add3DCube(ImVec2 center, float size, float perspective, float rotationX, float rotationY, float distance)
-    {
-	    std::array<ImVec3, 8> cube_vertices{ {
-		    ImVec3(-1, -1, -1), ImVec3(1, -1, -1),
-		    ImVec3(1,  1, -1), ImVec3(-1,  1, -1),
-		    ImVec3(-1, -1,  1), ImVec3(1, -1,  1),
-		    ImVec3(1,  1,  1), ImVec3(-1,  1,  1)} 
-    };
+	inline ImVec3 RotateY(const ImVec3& v, float angle)
+	{
+		float rad = angle * (3.14159f / 180.0f);
+		float cosA = cos(rad);
+		float sinA = sin(rad);
+
+		return ImVec3(v.x * cosA + v.z * sinA, v.y, -v.x * sinA + v.z * cosA);
+	}
+
+	inline void Add3DCube(ImVec2 center, float size, float perspective, float rotationX, float rotationY, float distance)
+	{
+		std::array<ImVec3, 8> cube_vertices{ {
+			ImVec3(-1, -1, -1), ImVec3(1, -1, -1),
+			ImVec3(1,  1, -1), ImVec3(-1,  1, -1),
+			ImVec3(-1, -1,  1), ImVec3(1, -1,  1),
+			ImVec3(1,  1,  1), ImVec3(-1,  1,  1)}
+	};
 
 	std::array<ImVec2, 8> projected_vertices;
 
@@ -106,7 +111,7 @@ namespace ImNeo
 	}
 }
 
-struct AnimationState 
+struct AnimationState
 {
 	bool state;
 	float target_speed;
@@ -136,16 +141,16 @@ inline void AddLoadingCube(const char* label, ImVec2 position)
 
 	static std::map<ImGuiID, AnimationState> animations;
 	if(animations.find(id) == animations.end()) animations[id] = AnimationState{ true, 68.0f, 0.0f, 0.0f, 0.0f };
-		
+
 	AnimationState& anim_state = animations[id];
 	const float lerp_factor = delta_time * 3.0f;
 
-	if(anim_state.state) 
+	if(anim_state.state)
     {
 		anim_state.speed_multiplier = ImLerp(anim_state.speed_multiplier, anim_state.target_speed, lerp_factor);
 		if(anim_state.speed_multiplier >= anim_state.target_speed * 0.95f) anim_state.state = false;
 	}
-	else 
+	else
     {
 		anim_state.speed_multiplier = ImLerp(anim_state.speed_multiplier, 2.0f, lerp_factor);
 		if(anim_state.speed_multiplier <= 2.4f) anim_state.state = true;
@@ -156,7 +161,7 @@ inline void AddLoadingCube(const char* label, ImVec2 position)
 	const float scale_factor = 1.0f + (anim_state.speed_multiplier * 0.0012f);
 
 	Add3DCube
-    (
+	(
 		position + ImVec2(cube_size / 2.f + spacing / 2.f, cube_size / 2.f + spacing / 4.f),
 		cube_size,
 		0.6f,
@@ -165,15 +170,20 @@ inline void AddLoadingCube(const char* label, ImVec2 position)
 		scale_factor
 	);
 
-	if(ImGui::GetIO().Fonts->Fonts.Size > 8 && ImGui::GetIO().Fonts->Fonts[8]) ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[8]);
-	else ImGui::PushFont(ImGui::GetFont());
-
+	if(ImGui::GetIO().Fonts->Fonts.Size > 8 && ImGui::GetIO().Fonts->Fonts[8])
+	{
+		ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[8]);
+	}
+	else
+	{
+		ImGui::PushFont(ImGui::GetFont());
+	}
 	static std::map<ImGuiID, float> values;
 	float& val = values[id];
 	val = ImLerp(val, 200.f, g.IO.DeltaTime * 10.f);
 
 	ImVec2 text_pos = ImVec2
-    (
+	(
 		bb.Min.x + (bb.GetWidth() - text_size.x) / 2.0f,
 		bb.Min.y + bb.GetHeight() + 5.0f
 	);
@@ -207,7 +217,7 @@ inline bool Checkbox(const char* label, bool* value, float height = 22.0f, float
 
 	const ImVec2 pos = ImGui::GetCursorScreenPos();
 	const ImVec2 toggle_pos = ImVec2(pos.x + label_size.x + spacing, pos.y + (height - toggle_height) * 0.5f);
-			
+
 	const ImVec2 toggle_size = ImVec2(toggle_width, toggle_height);
 
 	const ImRect total_bb(pos, ImVec2(pos.x + total_width, pos.y + height));
@@ -219,7 +229,7 @@ inline bool Checkbox(const char* label, bool* value, float height = 22.0f, float
 	const bool pressed = ImGui::ButtonBehavior(total_bb, id, &hovered, &held);
 
 	auto& state = checkbox_states[id];
-			
+
 	ImGuiIO& io = ImGui::GetIO();
 	ImVec4 target_text = *value ? ImVec4(1.0f, 1.0f, 1.0f, 1.0f) :
 			hovered ? ImVec4(0.9f, 0.9f, 0.9f, 1.0f) :
@@ -265,48 +275,56 @@ inline bool Checkbox(const char* label, bool* value, float height = 22.0f, float
 
 namespace Widgets
 {
-    struct ButtonState
-    {
-        ImVec4 background = ImVec4(0.15f, 0.15f, 0.15f, 1.f);
-    };
+	struct ButtonState
+	{
+		ImVec4 background = ImVec4(0.15f, 0.15f, 0.15f, 1.f);
+	};
 
-    inline std::unordered_map<ImGuiID, ButtonState> button_states;
+	inline std::unordered_map<ImGuiID, ButtonState> button_states;
 
-   
-    inline bool Button(std::string_view label, const ImVec2& size, bool highlight_on_hover = false)
-    {
-        ImGuiWindow* window = ImGui::GetCurrentWindow();
-        if (!window || window->SkipItems) return false;
+	inline bool Button(std::string_view label, const ImVec2& size, bool highlight_on_hover = false)
+	{
+		ImGuiWindow* window = ImGui::GetCurrentWindow();
+		if (!window || window->SkipItems)
+		{
+			return false;
+		}
 
-        const ImGuiID id = window->GetID(label.data());
-        const ImVec2 pos = window->DC.CursorPos;
-        const ImRect rect(pos, pos + size);
+		const ImGuiID id = window->GetID(label.data());
+		const ImVec2 pos = window->DC.CursorPos;
+		const ImRect rect(pos, pos + size);
 
-        ImGui::ItemSize(size);
-        if (!ImGui::ItemAdd(rect, id)) return false;
+		ImGui::ItemSize(size);
+		if (!ImGui::ItemAdd(rect, id))
+		{
+			return false;
+		}
 
-        bool hovered, held;
-        bool pressed = ImGui::ButtonBehavior(rect, id, &hovered, &held);
+		bool hovered, held;
+		bool pressed = ImGui::ButtonBehavior(rect, id, &hovered, &held);
 
-        auto& state = button_states[id];
-        ImVec4 target_color = ImVec4(0.2f, 0.2f, 0.2f, 1.f);
+		auto& state = button_states[id];
+		ImVec4 target_color = ImVec4(0.2f, 0.2f, 0.2f, 1.f);
 
-        if (ImGui::IsItemActive())
-            target_color = ImVec4(0.2f, 0.6f, 1.0f, 1.f);
-        else if (highlight_on_hover && hovered) 
-            target_color =ImVec4(0.3f, 0.5f, 0.85f, 1.0f);
+		if (ImGui::IsItemActive())
+		{
+			target_color = ImVec4(0.2f, 0.6f, 1.0f, 1.f);
+		}
+		else if (highlight_on_hover && hovered)
+		{
+			target_color =ImVec4(0.3f, 0.5f, 0.85f, 1.0f);
+		}
 
-        state.background = ImLerp(state.background, target_color, ImGui::GetIO().DeltaTime * 8.f);
+		state.background = ImLerp(state.background, target_color, ImGui::GetIO().DeltaTime * 8.f);
 
-        window->DrawList->AddRectFilled(rect.Min, rect.Max,
-            ImGui::ColorConvertFloat4ToU32(state.background), 4.0f);
+		window->DrawList->AddRectFilled(rect.Min, rect.Max,
+		ImGui::ColorConvertFloat4ToU32(state.background), 4.0f);
 
-        window->DrawList->AddText(rect.Min + ImVec2(size.x * 0.5f - ImGui::CalcTextSize(label.data()).x * 0.5f,
-                                                    size.y * 0.5f - ImGui::GetFontSize() * 0.5f),
-            IM_COL32_WHITE, label.data());
+		window->DrawList->AddText(rect.Min + ImVec2(size.x * 0.5f - ImGui::CalcTextSize(label.data()).x * 0.5f,
+													size.y * 0.5f - ImGui::GetFontSize() * 0.5f), IM_COL32_WHITE, label.data());
 
-        return pressed;
-    }
+		return pressed;
+	}
 }
 
 }
