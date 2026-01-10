@@ -15,15 +15,13 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out)
 
 message(STATUS "📦 Starting to fetch dependencies...")
 
-# 🔧 РАННЕЕ ОБНАРУЖЕНИЕ GTK ДЛЯ LINUX
 if(UNIX AND NOT APPLE)
     find_package(PkgConfig REQUIRED)
     pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
     message(STATUS "GTK3 include dirs: ${GTK3_INCLUDE_DIRS}")
     message(STATUS "GTK3 libraries: ${GTK3_LIBRARIES}")
     message(STATUS "GTK3 flags: ${GTK3_CFLAGS_OTHER}")
-    
-    # Добавляем флаги компиляции для всего проекта
+
     add_compile_options(${GTK3_CFLAGS_OTHER})
     include_directories(${GTK3_INCLUDE_DIRS})
 endif()
@@ -105,13 +103,11 @@ elseif(UNIX)
 endif()
 
 add_library(nfd STATIC ${NFD_SRC})
-target_include_directories(nfd PUBLIC 
+target_include_directories(nfd PUBLIC
     ${nativefiledialog_SOURCE_DIR}/src/include
 )
 
-# 🔧 ДОБАВЛЯЕМ GTK ДЛЯ NFD НА LINUX
 if(UNIX AND NOT APPLE)
-    # Уже найдено в начале файла, просто линкуем
     target_link_libraries(nfd PUBLIC ${GTK3_LIBRARIES})
     target_include_directories(nfd PUBLIC ${GTK3_INCLUDE_DIRS})
 endif()
@@ -146,7 +142,7 @@ add_executable(ORMTool
     src/UI/UIManager.cpp
     src/UI/UIManager.h
     src/UI/ImNeo.h
-    
+
     src/IO/IOService.cpp
     src/IO/IOService.h
 
@@ -172,6 +168,7 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/src PREFIX "Source" FILES
     src/IO/IOService.h
 
     src/Utils/Constants.h
+    src/Utils/Types.h
 )
 
 #  -------------------------------------------------------------------------
@@ -190,7 +187,6 @@ target_include_directories(ORMTool PRIVATE
     ${nativefiledialog_SOURCE_DIR}/src/include
 )
 
-# 🔧 ДОБАВЛЯЕМ GTK ДЛЯ ОСНОВНОГО ПРИЛОЖЕНИЯ НА LINUX
 if(UNIX AND NOT APPLE)
     target_include_directories(ORMTool PRIVATE ${GTK3_INCLUDE_DIRS})
 endif()
@@ -203,7 +199,7 @@ find_package(OpenGL REQUIRED)
 if(UNIX AND NOT APPLE)
     find_package(X11 REQUIRED)
     find_package(Threads REQUIRED)
-    
+
     target_link_libraries(ORMTool PRIVATE
         imgui
         glfw
@@ -217,19 +213,17 @@ if(UNIX AND NOT APPLE)
         Xcursor
         Xinerama
         Xxf86vm
-        # Системные библиотеки
         Threads::Threads
         dl
         pthread
         m
-        # GTK библиотеки (для NFD)
         ${GTK3_LIBRARIES}
     )
-    
+
     message(STATUS "🐧 Platform: Linux")
     message(STATUS "📚 X11 libraries: ${X11_LIBRARIES}")
     message(STATUS "🎨 GTK3 libraries: ${GTK3_LIBRARIES}")
-    
+
 elseif(WIN32)
     target_link_libraries(ORMTool PRIVATE
         imgui
@@ -238,7 +232,7 @@ elseif(WIN32)
         nfd
     )
     message(STATUS "🖥  Platform: Windows")
-    
+
 elseif(APPLE)
     target_link_libraries(ORMTool PRIVATE
         imgui
