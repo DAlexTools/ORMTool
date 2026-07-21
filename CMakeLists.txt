@@ -212,7 +212,7 @@ if(UNIX AND NOT APPLE)
         glfw
         OpenGL::GL
         nfd
-        # X11 библиотеки
+        # X11 libraries
         ${X11_LIBRARIES}
         X11
         Xrandr
