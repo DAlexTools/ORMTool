@@ -8,44 +8,90 @@
 #include <string_view>
 #include <unordered_map>
 
+/**
+ * @brief Custom ImGui drawing helpers and animated widgets.
+ */
 namespace ImNeo
 {
-	/** operator+ overload  */
+	/**
+	 * @brief Adds two ImGui vectors component-wise.
+	 * @param lhs Left operand.
+	 * @param rhs Right operand.
+	 * @return Component-wise vector sum.
+	 */
 	inline ImVec2 operator+(const ImVec2& lhs, const ImVec2& rhs)
 	{
 		return ImVec2(lhs.x + rhs.x, lhs.y + rhs.y);
 	}
 
-	/** operator- overload */
+	/**
+	 * @brief Subtracts two ImGui vectors component-wise.
+	 * @param lhs Left operand.
+	 * @param rhs Right operand.
+	 * @return Component-wise vector difference.
+	 */
 	inline ImVec2 operator-(const ImVec2& lhs, const ImVec2& rhs)
 	{
 		return ImVec2(lhs.x - rhs.x, lhs.y - rhs.y);
 	}
 
-	/** operator* overload */
+	/**
+	 * @brief Multiplies an ImGui vector by a scalar.
+	 * @param lhs Vector operand.
+	 * @param rhs Scalar operand.
+	 * @return Scaled vector.
+	 */
 	inline ImVec2 operator*(const ImVec2& lhs, float rhs)
 	{
 		return ImVec2(lhs.x * rhs, lhs.y * rhs);
 	}
 
-	/** operator* overload */
+	/**
+	 * @brief Multiplies an ImGui vector by a scalar.
+	 * @param lhs Scalar operand.
+	 * @param rhs Vector operand.
+	 * @return Scaled vector.
+	 */
 	inline ImVec2 operator*(float lhs, const ImVec2& rhs)
 	{
 		return ImVec2(lhs * rhs.x, lhs * rhs.y);
 	}
 
-	/* operator/ overload */
+	/**
+	 * @brief Divides an ImGui vector by a scalar.
+	 * @param lhs Vector operand.
+	 * @param rhs Scalar divisor.
+	 * @return Scaled vector.
+	 */
 	inline ImVec2 operator/(const ImVec2& lhs, float rhs)
 	{
 		return ImVec2(lhs.x / rhs, lhs.y / rhs);
 	}
 
+	/**
+	 * @brief Simple three-dimensional vector used by custom widget drawing.
+	 */
 	struct ImVec3
 	{
-		float x, y, z;
+		float x; ///< X coordinate.
+		float y; ///< Y coordinate.
+		float z; ///< Z coordinate.
+
+		/**
+		 * @brief Creates a vector from explicit coordinates.
+		 * @param _x X coordinate.
+		 * @param _y Y coordinate.
+		 * @param _z Z coordinate.
+		 */
 		ImVec3(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {}
 	};
 
+	/**
+	 * @brief Rotates a vector around the X axis.
+	 * @param v Vector to rotate.
+	 * @param angle Rotation angle in degrees.
+	 * @return Rotated vector.
+	 */
 	inline ImVec3 RotateX(const ImVec3& v, float angle)
 	{
 		float rad = angle * (3.14159f / 180.0f);
@@ -55,6 +101,12 @@ namespace ImNeo
 		return ImVec3(v.x, v.y * cosA - v.z * sinA, v.y * sinA + v.z * cosA);
 	}
 
+	/**
+	 * @brief Rotates a vector around the Y axis.
+	 * @param v Vector to rotate.
+	 * @param angle Rotation angle in degrees.
+	 * @return Rotated vector.
+	 */
 	inline ImVec3 RotateY(const ImVec3& v, float angle)
 	{
 		float rad = angle * (3.14159f / 180.0f);
@@ -64,6 +116,15 @@ namespace ImNeo
 		return ImVec3(v.x * cosA + v.z * sinA, v.y, -v.x * sinA + v.z * cosA);
 	}
 
+	/**
+	 * @brief Draws a projected wireframe cube into the current ImGui window.
+	 * @param center Cube center in screen coordinates.
+	 * @param size Base cube size.
+	 * @param perspective Perspective projection factor.
+	 * @param rotationX Rotation around the X axis in degrees.
+	 * @param rotationY Rotation around the Y axis in degrees.
+	 * @param distance Distance multiplier used before projection.
+	 */
 	inline void Add3DCube(ImVec2 center, float size, float perspective, float rotationX, float rotationY, float distance)
 	{
 		std::array<ImVec3, 8> cube_vertices{ {
@@ -111,15 +172,23 @@ namespace ImNeo
 	}
 }
 
+/**
+ * @brief Per-widget state for the animated loading cube.
+ */
 struct AnimationState
 {
-	bool state;
-	float target_speed;
-	float speed_multiplier;
-	float rotation_x;
-	float rotation_y;
+	bool state;             ///< Whether animation speed is currently increasing.
+	float target_speed;     ///< Maximum target animation speed.
+	float speed_multiplier; ///< Current animation speed multiplier.
+	float rotation_x;       ///< Current X-axis rotation.
+	float rotation_y;       ///< Current Y-axis rotation.
 };
 
+/**
+ * @brief Draws an animated loading cube with a text label.
+ * @param label Visible label and ImGui id source.
+ * @param position Top-left position for the widget.
+ */
 inline void AddLoadingCube(const char* label, ImVec2 position)
 {
 	ImGuiWindow* window = ImGui::GetCurrentWindow();
@@ -196,16 +265,33 @@ inline void AddLoadingCube(const char* label, ImVec2 position)
 
 
 
+/**
+ * @brief Per-widget state for the custom checkbox.
+ */
 struct CheckboxState
 {
-	float circle_offset = 0.0f;
-	ImVec4 background = ImVec4(0.2f, 0.9f, 0.2f, 1.0f);
-	ImVec4 text_colored = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
-	ImVec4 circle = ImVec4(0.6f, 0.6f, 0.6f, 1.0f);
+	float circle_offset = 0.0f;                                  ///< Animated toggle knob offset.
+	ImVec4 background = ImVec4(0.2f, 0.9f, 0.2f, 1.0f);          ///< Current background color.
+	ImVec4 text_colored = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);       ///< Current label color.
+	ImVec4 circle = ImVec4(0.6f, 0.6f, 0.6f, 1.0f);             ///< Current knob color.
 };
 
+/**
+ * @brief Animation state storage keyed by ImGui widget id.
+ */
 inline std::unordered_map<ImGuiID, CheckboxState> checkbox_states;
 
+/**
+ * @brief Draws an animated checkbox toggle.
+ * @param label Visible label and ImGui id source.
+ * @param value Boolean value updated when the control is pressed.
+ * @param height Control height in pixels.
+ * @param toggle_width Toggle body width in pixels.
+ * @param toggle_height Toggle body height in pixels.
+ * @param radius Toggle knob radius in pixels.
+ * @param spacing Spacing between label and toggle.
+ * @return True when the checkbox was pressed in this frame.
+ */
 inline bool Checkbox(const char* label, bool* value, float height = 22.0f, float toggle_width = 30.0f, float toggle_height = 14.0f,float radius = 5.0f,float spacing = 8.0f)
 {
 	ImGuiWindow* window = ImGui::GetCurrentWindow();
@@ -273,15 +359,31 @@ inline bool Checkbox(const char* label, bool* value, float height = 22.0f, float
 
 
 
+/**
+ * @brief Extra custom widgets built on top of ImGui primitives.
+ */
 namespace Widgets
 {
+	/**
+	 * @brief Per-widget state for custom buttons.
+	 */
 	struct ButtonState
 	{
-		ImVec4 background = ImVec4(0.15f, 0.15f, 0.15f, 1.f);
+		ImVec4 background = ImVec4(0.15f, 0.15f, 0.15f, 1.f); ///< Current animated background color.
 	};
 
+	/**
+	 * @brief Animation state storage keyed by ImGui button id.
+	 */
 	inline std::unordered_map<ImGuiID, ButtonState> button_states;
 
+	/**
+	 * @brief Draws a custom animated button.
+	 * @param label Visible text and ImGui id source.
+	 * @param size Button size in pixels.
+	 * @param highlight_on_hover Whether hover state should use the accent color.
+	 * @return True when the button was pressed in this frame.
+	 */
 	inline bool Button(std::string_view label, const ImVec2& size, bool highlight_on_hover = false)
 	{
 		ImGuiWindow* window = ImGui::GetCurrentWindow();

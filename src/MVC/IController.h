@@ -1,69 +1,63 @@
-#pragma once 
-#include <memory>
+#pragma once
 #include "IModel.h"
+#include <memory>
 
 /**
- * Interface: IController
- *
- * Base interface for all controller classes in the MVC architecture.
- * Controllers act as intermediaries between UI views and data models,
- * providing business logic, event handling, and state management.
- *
- * Notes:
- * - All controllers must implement Initialize() to prepare internal state or bind events.
- * - Typically used in combination with IControllerTyped<TModel>.
+ * @brief Base interface for controllers in the MVC layer.
  */
 class IController
 {
 public:
+	/**
+	 * @brief Destroys the controller through the base interface.
+	 */
 	virtual ~IController() = default;
 
-	/** Called once to initialize controller state, bind data, or set up handlers. */
+	/**
+	 * @brief Initializes controller state, bindings, and event handlers.
+	 */
 	virtual void Initialize() = 0;
 };
-class IController
-{
-public:
-	virtual ~IController() = default;
-	virtual void Initialize() = 0;
-};
-
-
 
 /**
- * Interface: IControllerTyped
- *
- * Typed extension of the base controller interface for exposing an associated model.
- * Used to provide safe, structured access to a strongly-typed data model instance.
- *
- * Template Parameter:
- *   TModel - The specific model class managed by this controller.
- *
- * Notes:
- * - Both const and non-const shared pointer accessors must be implemented.
- * - Provides convenient GetModelRef() methods for reference-style access.
+ * @brief Typed extension for controllers that expose a strongly typed model.
+ * @tparam TModel Model type managed by this controller.
  */
-template<typename TModel>
-class IControllerTyped
+template <typename TModel> class IControllerTyped
 {
 public:
+	/**
+	 * @brief Destroys the typed controller through the base interface.
+	 */
 	virtual ~IControllerTyped() = default;
 
-	/** Returns a mutable shared pointer to the associated model. */
+	/**
+	 * @brief Returns a shared pointer to the associated model.
+	 * @return Mutable model pointer.
+	 */
 	virtual std::shared_ptr<TModel> GetTypedModel() = 0;
 
-	/** Returns a read-only shared pointer to the associated model. */
+	/**
+	 * @brief Returns a read-only shared pointer to the associated model.
+	 * @return Const model pointer.
+	 */
 	virtual std::shared_ptr<const TModel> GetTypedModel() const = 0;
 
-	/** Returns a direct mutable reference to the associated model. */
+	/**
+	 * @brief Returns a direct mutable reference to the associated model.
+	 * @return Mutable model reference.
+	 */
 	TModel& GetModelRef()
 	{
-		return *GetModel();
+		return *GetTypedModel();
 	}
 
-	/** Returns a direct read-only reference to the associated model. */
+	/**
+	 * @brief Returns a direct read-only reference to the associated model.
+	 * @return Const model reference.
+	 */
 	const TModel& GetModelRef() const
 	{
-		return *GetModel();
+		return *GetTypedModel();
 	}
 };

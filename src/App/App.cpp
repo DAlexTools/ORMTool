@@ -1,3 +1,13 @@
+#ifdef _WIN32
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <windows.h>
+#endif
+
 #include "App.h"
 
 #include <iostream>
@@ -6,9 +16,6 @@
     #include <X11/Xlib.h>
     #include <X11/Xatom.h>
 
-#elif _WIN32
-    #define WIN32_LEAN_AND_MEAN
-    #include <windows.h>
 #elif __APPLE__
     #include <ApplicationServices/ApplicationServices.h>
 #endif
@@ -127,6 +134,7 @@ std::string_view Application::GetInitStatus(InitStatus status)
     {
         return InitStatus::WindowCreationFailed;
     }
+	glfwSetWindowSizeLimits(window, ORM::WindowWidth, ORM::WindowHeight, ORM::WindowWidth, ORM::WindowHeight);
 
     glfwSetWindowCloseCallback(window, [](GLFWwindow* w)
 	{
@@ -144,7 +152,10 @@ std::string_view Application::GetInitStatus(InitStatus status)
 
 void Application::RenderScene()
 {
-	glViewport(0, 0, ORM::WindowWidth, ORM::WindowHeight);
+	int framebufferWidth = 0;
+	int framebufferHeight = 0;
+	glfwGetFramebufferSize(window, &framebufferWidth, &framebufferHeight);
+	glViewport(0, 0, framebufferWidth, framebufferHeight);
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); //
 	glClear(GL_COLOR_BUFFER_BIT);
 }
@@ -161,7 +172,7 @@ void Application::ConfigureGLFWHints()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, ORM::GraphicsConfig::OPENGL_MINOR);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
     glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
     glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
     glfwWindowHint(GLFW_FOCUSED, GLFW_TRUE);

@@ -4,59 +4,66 @@
 
 
 /**
- * Interface: IView
- *
- * Base interface for all UI view classes in the MVC architecture.
- * Represents a visual component that is responsible for rendering
- * and managing user-facing interface elements.
- *
- * Notes:
- * - Initialize() is called once to prepare internal state and bind the controller.
- * - Draw() is called every frame to render the UI contents.
+ * @brief Base interface for UI views in the MVC layer.
  */
 class IView
 {
 public:
+	/**
+	 * @brief Destroys the view through the base interface.
+	 */
 	virtual ~IView() = 0;
 
+	/**
+	 * @brief Prepares the view before it is drawn.
+	 */
 	virtual void Initialize() = 0;
+
+	/**
+	 * @brief Draws the view for the current UI frame.
+	 */
 	virtual void Draw() = 0;
 };
 
 
 /**
- * Interface: IViewTyped
- *
- * Typed extension of the base view interface for exposing a strongly-typed controller.
- * Enables views to safely access their controller logic with full type information.
- *
- * Template Parameter:
- *   TController - The specific controller class used by this view.
- *
- * Notes:
- * - Both const and non-const accessors must be implemented.
- * - Helper methods GetControllerRef() and GetControllerRef() const provide
- *   direct reference access for convenience and improved readability.
+ * @brief Typed extension for views that expose a strongly typed controller.
+ * @tparam TController Controller type used by this view.
  */
 template<typename TController>
 class IViewTyped
 {
 public:
+	/**
+	 * @brief Destroys the typed view through the base interface.
+	 */
 	virtual ~IViewTyped() = default;
 
-	/** Returns a shared pointer to the controller instance. */
+	/**
+	 * @brief Returns a shared pointer to the controller instance.
+	 * @return Mutable controller pointer.
+	 */
 	virtual std::shared_ptr<TController> GetTypedController() = 0;
 
-	/** Returns a shared pointer to the controller instance (const version). */
+	/**
+	 * @brief Returns a read-only shared pointer to the controller instance.
+	 * @return Const controller pointer.
+	 */
 	virtual std::shared_ptr<const TController> GetTypedController() const = 0;
 
-	/** Returns a direct reference to the controller instance. */
+	/**
+	 * @brief Returns a direct mutable reference to the controller instance.
+	 * @return Mutable controller reference.
+	 */
 	TController& GetControllerRef()
 	{
 		return *GetTypedController();
 	}
 
-	/** Returns a direct const reference to the controller instance. */
+	/**
+	 * @brief Returns a direct read-only reference to the controller instance.
+	 * @return Const controller reference.
+	 */
 	const TController& GetControllerRef() const
 	{
 		return *GetTypedController();
